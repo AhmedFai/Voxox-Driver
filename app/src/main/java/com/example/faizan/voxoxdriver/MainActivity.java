@@ -30,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
                 new AHBottomNavigationItem("Profile", R.drawable.user_32_white);
 
         AHBottomNavigationItem item2 =
-                new AHBottomNavigationItem("Support", R.drawable.message_32_white);
+                new AHBottomNavigationItem("Account", R.drawable.message_32_white);
 
         AHBottomNavigationItem item3 =
-                new AHBottomNavigationItem("Book Ride", R.drawable.location_32_white);
+                new AHBottomNavigationItem("Home", R.drawable.location_32_white);
 
         AHBottomNavigationItem item4 =
-                new AHBottomNavigationItem("Ride History", R.drawable.history_32_white);
+                new AHBottomNavigationItem("Performance", R.drawable.history_32_white);
 
         AHBottomNavigationItem item5 =
                 new AHBottomNavigationItem("Notification", R.drawable.notification_32_white);
@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         bottom.addItem(item3);
         bottom.addItem(item4);
         bottom.addItem(item5);
+
+        bottom.setBehaviorTranslationEnabled(false);
 
         bottom.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 
