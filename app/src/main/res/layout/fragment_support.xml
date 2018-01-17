@@ -46,7 +46,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/setting_icon"
+                            android:drawableLeft="@drawable/richsvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Current Balance"
@@ -113,7 +113,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/setting_icon"
+                            android:drawableLeft="@drawable/piggysvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Today's Payment"
@@ -130,7 +130,6 @@
 
                     </LinearLayout>
 
-<!--
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -149,7 +148,6 @@
                             android:textColor="#000"
                             android:textSize="16sp" />
                     </LinearLayout>
--->
 
                 </LinearLayout>
 
@@ -182,7 +180,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="20dp"
                         android:drawablePadding="10dp"
-                        android:drawableStart="@drawable/setting_icon"
+                        android:drawableStart="@drawable/documentsvg"
                         android:text="Today's Summary"
                         android:textColor="#000"
                         android:textSize="18sp" />
@@ -218,6 +216,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
+                                android:drawableStart="@drawable/vouchersvg"
+                                android:drawablePadding="10dp"
+                                android:gravity="center_vertical"
                                 android:text="Operator Bill"
                                 android:textSize="18sp" />
 
@@ -279,6 +280,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:text="Cash Collected"
+                                android:drawableStart="@drawable/moneysvg"
+                                android:drawablePadding="10dp"
                                 android:textSize="18sp" />
 
 
@@ -339,6 +342,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:text="Login Hours"
+                                android:drawableStart="@drawable/timesvg"
+                                android:drawablePadding="10dp"
+                                android:gravity="center_vertical"
                                 android:textSize="18sp" />
 
 
@@ -375,6 +381,7 @@
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/byDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -405,7 +412,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/setting_icon"
+                            android:drawableLeft="@drawable/barsvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Net Earning By Day"
@@ -435,6 +442,7 @@
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/bankCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -465,7 +473,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/setting_icon"
+                            android:drawableLeft="@drawable/transfersvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Bank By Day"

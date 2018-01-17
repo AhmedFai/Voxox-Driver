@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ import github.nisrulz.easydeviceinfo.base.EasyLocationMod;
 public class BookRideFragment extends Fragment {
     SupportMapFragment mSupportMapFragment;
 
+    Toolbar toolbar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,8 @@ public class BookRideFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_book_ride, container,false);
+
+        toolbar = ((MainActivity)getActivity()).findViewById(R.id.toolbar);
 
         mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.bookRideFragment);
         if (mSupportMapFragment == null) {
@@ -117,4 +122,21 @@ public class BookRideFragment extends Fragment {
         return view;
     }
 
- }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        toolbar.setNavigationIcon(null);
+
+        /*toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                getFragmentManager().popBackStack();
+
+            }
+        });*/
+
+    }
+}

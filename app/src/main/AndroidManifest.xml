@@ -27,7 +27,8 @@
 
         <activity android:name=".CurrentBalanceStatement" />
         <activity android:name=".OperatorBill" />
-        <activity android:name=".EarningByDay"></activity>
+        <activity android:name=".EarningByDay" />
+        <activity android:name=".BankByDay"></activity>
     </application>
 
 </manifest>

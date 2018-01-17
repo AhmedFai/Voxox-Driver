@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public class RideHistoryFragment extends Fragment {
     public static ViewPager pager;
     PerformancePager adapter;
 
+    Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class RideHistoryFragment extends Fragment {
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_ride_history,container,false);
 
+        toolbar = ((MainActivity)getActivity()).findViewById(R.id.toolbar);
         tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
         pager = (ViewPager) view.findViewById(R.id.pager);
        // pager.setSwipeable(true);
@@ -49,6 +52,23 @@ public class RideHistoryFragment extends Fragment {
 
 
        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        toolbar.setNavigationIcon(null);
+
+        /*toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                getFragmentManager().popBackStack();
+
+            }
+        });*/
+
     }
 
     public class PerformancePager extends FragmentStatePagerAdapter {
