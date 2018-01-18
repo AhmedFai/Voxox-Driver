@@ -186,19 +186,19 @@ public class MainActivity extends AppCompatActivity {
 
 
         AHBottomNavigationItem item1 =
-                new AHBottomNavigationItem("Duty", R.drawable.on_duty_white);
+                new AHBottomNavigationItem("Duty", R.drawable.deliverysvg);
 
         AHBottomNavigationItem item2 =
-                new AHBottomNavigationItem("Account", R.drawable.account_white_32);
+                new AHBottomNavigationItem("Account", R.drawable.calculatorsvg);
 
         AHBottomNavigationItem item3 =
                 new AHBottomNavigationItem("Incentives", R.drawable.coinssvg);
 
         AHBottomNavigationItem item4 =
-                new AHBottomNavigationItem("Performance", R.drawable.performance_white_32);
+                new AHBottomNavigationItem("Performance", R.drawable.medalsvg);
 
         AHBottomNavigationItem item5 =
-                new AHBottomNavigationItem("More", R.drawable.more_white_32);
+                new AHBottomNavigationItem("More", R.drawable.moresvg);
 
         bottom.addItem(item1);
         bottom.addItem(item2);

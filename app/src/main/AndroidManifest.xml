@@ -28,7 +28,13 @@
         <activity android:name=".CurrentBalanceStatement" />
         <activity android:name=".OperatorBill" />
         <activity android:name=".EarningByDay" />
-        <activity android:name=".BankByDay"></activity>
+        <activity android:name=".BankByDay" />
+        <activity android:name=".FinalBankTranfer" />
+        <activity android:name=".NetEarning" />
+        <activity android:name=".IncentiveBreakup" />
+        <activity android:name=".IncentiveEligibleOperatorBill" />
+        <activity android:name=".ActualOperatorBill" />
+        <activity android:name=".BookingDetails"></activity>
     </application>
 
 </manifest>

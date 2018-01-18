@@ -28,8 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp">
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="start">
 
                         <TextView
@@ -50,6 +50,7 @@
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Current Balance"
+                            android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18sp" />
 
@@ -58,7 +59,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0.5"
                         android:gravity="end">
 
                         <TextView
@@ -94,8 +95,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp">
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -115,6 +116,7 @@
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/piggysvg"
                             android:drawablePadding="10dp"
+                            android:layout_marginStart="10dp"
                             android:gravity="center_vertical"
                             android:text="Today's Payment"
                             android:textColor="#000"
@@ -123,7 +125,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="35dp"
+                            android:layout_marginStart="45dp"
                             android:layout_marginTop="5dp"
                             android:singleLine="true"
                             android:text="Payment is successfully transferred" />
@@ -177,7 +179,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="20dp"
                         android:drawablePadding="10dp"
                         android:drawableStart="@drawable/documentsvg"
@@ -215,12 +217,12 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
+                                android:layout_marginStart="25dp"
                                 android:drawableStart="@drawable/vouchersvg"
                                 android:drawablePadding="10dp"
                                 android:gravity="center_vertical"
                                 android:text="Operator Bill"
-                                android:textSize="18sp" />
+                                android:textSize="16sp" />
 
 
                         </LinearLayout>
@@ -278,11 +280,11 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
+                                android:layout_marginStart="25dp"
                                 android:text="Cash Collected"
                                 android:drawableStart="@drawable/moneysvg"
                                 android:drawablePadding="10dp"
-                                android:textSize="18sp" />
+                                android:textSize="16sp" />
 
 
                         </LinearLayout>
@@ -340,12 +342,12 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
+                                android:layout_marginStart="25dp"
                                 android:text="Login Hours"
                                 android:drawableStart="@drawable/timesvg"
                                 android:drawablePadding="10dp"
                                 android:gravity="center_vertical"
-                                android:textSize="18sp" />
+                                android:textSize="16sp" />
 
 
                         </LinearLayout>
@@ -386,7 +388,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             app:cardElevation="2dp"
             app:contentPadding="5dp">
 
@@ -394,8 +396,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp">
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -416,6 +418,7 @@
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Net Earning By Day"
+                            android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18sp" />
 
@@ -447,7 +450,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             app:cardElevation="2dp"
             app:contentPadding="5dp">
 
@@ -455,8 +458,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp">
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -477,6 +480,7 @@
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Bank By Day"
+                            android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18sp" />
 
