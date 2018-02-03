@@ -1,6 +1,7 @@
 package com.example.faizan.voxoxdriver;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +25,10 @@ public class MainActivity extends AppCompatActivity {
     AHBottomNavigation bottom;
     Toolbar toolbar;
     DrawerLayout drawer;
-    TextView refer, training, money, news, care,manage;
+    TextView refer, training, money, news, care,manage,logout;
+    SharedPreferences pref;
+
+    SharedPreferences.Editor edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         news = (TextView)findViewById(R.id.news);
         care = (TextView)findViewById(R.id.care);
         manage = (TextView)findViewById(R.id.manageProfile);
+        logout = (TextView)findViewById(R.id.logout);
+        pref = getApplication().getSharedPreferences("pref", MODE_PRIVATE);
+        edit = pref.edit();
+
 
         manage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +68,22 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
 
 
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                edit.remove("phone");
+                edit.remove("password");
+                edit.remove("driverId");
+                edit.apply();
+
+                Intent i = new Intent(MainActivity.this, loginActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                finish();
             }
         });
 

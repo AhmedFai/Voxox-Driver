@@ -8,9 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#f5f5f5"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:background="#f5f5f5"
         android:paddingBottom="10dp">
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,11 +46,11 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:drawableLeft="@drawable/richsvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Current Balance"
-                            android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18sp" />
 
@@ -114,9 +114,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:drawableLeft="@drawable/piggysvg"
                             android:drawablePadding="10dp"
-                            android:layout_marginStart="10dp"
                             android:gravity="center_vertical"
                             android:text="Today's Payment"
                             android:textColor="#000"
@@ -142,8 +142,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:drawablePadding="2dp"
                             android:layout_marginEnd="25dp"
+                            android:drawablePadding="2dp"
                             android:drawableStart="@drawable/rupee_icon"
                             android:gravity="center_vertical"
                             android:text="149"
@@ -218,8 +218,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="25dp"
-                                android:drawableStart="@drawable/vouchersvg"
                                 android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/vouchersvg"
                                 android:gravity="center_vertical"
                                 android:text="Operator Bill"
                                 android:textSize="16sp" />
@@ -237,9 +237,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
+                                android:drawableEnd="@drawable/chevron_right"
                                 android:drawableStart="@drawable/rupee_icon"
                                 android:text="645"
-                                android:drawableEnd="@drawable/chevron_right"
                                 android:textColor="#000"
                                 android:textSize="16sp" />
 
@@ -281,9 +281,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="25dp"
-                                android:text="Cash Collected"
-                                android:drawableStart="@drawable/moneysvg"
                                 android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/moneysvg"
+                                android:text="Cash Collected"
                                 android:textSize="16sp" />
 
 
@@ -343,10 +343,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="25dp"
-                                android:text="Login Hours"
-                                android:drawableStart="@drawable/timesvg"
                                 android:drawablePadding="10dp"
+                                android:drawableStart="@drawable/timesvg"
                                 android:gravity="center_vertical"
+                                android:text="Login Hours"
                                 android:textSize="16sp" />
 
 
@@ -414,11 +414,11 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:drawableLeft="@drawable/barsvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Net Earning By Day"
-                            android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18sp" />
 
@@ -476,11 +476,11 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:drawableLeft="@drawable/transfersvg"
                             android:drawablePadding="10dp"
                             android:gravity="center_vertical"
                             android:text="Bank By Day"
-                            android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18sp" />
 
@@ -503,7 +503,6 @@
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
-
 
 
     </LinearLayout>
