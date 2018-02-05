@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -19,12 +20,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinder;
+import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinderListener;
+import com.example.faizan.voxoxdriver.GoogleMapPOJO.Route;
 import com.example.faizan.voxoxdriver.acceptDenyPOJO.acceptDenyBean;
 import com.example.faizan.voxoxdriver.driverNotificationPOJO.notificationBean;
 import com.example.faizan.voxoxdriver.driverStatusPOJO.StatusBean;
@@ -37,10 +42,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.acl.LastOwnerException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -63,14 +73,22 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
     Timer timer;
     SharedPreferences pref;
     SharedPreferences.Editor edit;
-    CardView noti;
+    CardView noti, duty,start;
     ProgressBar bar;
     ImageView offI, onI, homeI, accept, deny;
     LinearLayout offLin, onLin, homeLin;
-    String notiId;
+    String notiId = " ";
 
     TextView notiName, pickupLocation;
 
+    GoogleMap map;
+    TextView time,value;
+
+    LatLng origin, destination;
+
+    private List<Marker> originMarkers = new ArrayList<>();
+    private List<Marker> destinationMarkers = new ArrayList<>();
+    private List<Polyline> polylinePaths = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,11 +117,16 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         pickupLocation = (TextView) view.findViewById(R.id.pickupLoc);
         accept = (ImageView) view.findViewById(R.id.accept);
         deny = (ImageView) view.findViewById(R.id.deny);
+        start = (CardView) view.findViewById(R.id.start);
+        duty = (CardView)view.findViewById(R.id.dutycard);
+        time = (TextView) view.findViewById(R.id.esTime) ;
+        value = (TextView) view.findViewById(R.id.value);
 
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //sendRequest();
 
                 timer.cancel();
                 call2.cancel();
@@ -120,7 +143,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 Allapi cr = retrofit.create(Allapi.class);
-                Call<acceptDenyBean> callacc = cr.accept(id, b.notificationId, "1");
+                Call<acceptDenyBean> callacc = cr.accept(id, notiId, "1");
                 Log.d("acceptId", id);
 
 
@@ -130,10 +153,18 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
 
                         Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
+                        Log.d("accpted", response.body().getMessage());
+
                         noti.setVisibility(View.GONE);
+                        duty.setVisibility(View.GONE);
+                        start.setVisibility(View.VISIBLE);
 
 
                         bar.setVisibility(View.GONE);
+
+
+                        statusForRide();
+
 
 
                     }
@@ -170,19 +201,18 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 Allapi cr = retrofit.create(Allapi.class);
-                Call<acceptDenyBean> call = cr.accept(id, b.notificationId, "2");
+                Call<acceptDenyBean> callden = cr.accept(id, notiId, "2");
 
                 Log.d("notidriverId", id);
-                Log.d("notiId", b.notificationId);
+                Log.d("notiId", notiId);
 
-                call.enqueue(new Callback<acceptDenyBean>() {
+                callden.enqueue(new Callback<acceptDenyBean>() {
                     @Override
                     public void onResponse(Call<acceptDenyBean> call, Response<acceptDenyBean> response) {
 
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                        Log.d("skjfjfgj", "dgfdg");
-
-                        //if (Objects.equals(response.body().getStatus(), ))
+                        Log.d("skjfjfgj", response.body().getMessage());
 
 
                         noti.setVisibility(View.GONE);
@@ -209,6 +239,10 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         });
 
 
+
+
+
+
         pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
         edit = pref.edit();
 
@@ -229,7 +263,9 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                 public void onMapReady(final GoogleMap googleMap) {
                     if (googleMap != null) {
 
-                        googleMap.getUiSettings().setAllGesturesEnabled(true);
+                        map=googleMap;
+
+                        map.getUiSettings().setAllGesturesEnabled(true);
 
                         EasyLocationMod easyLocationMod = new EasyLocationMod(getContext());
 
@@ -258,7 +294,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                                 String country = listAdresses.get(0).getCountryName();
                                 String subLocality = listAdresses.get(0).getSubLocality();
 
-                                googleMap.addMarker(new MarkerOptions()
+                                map.addMarker(new MarkerOptions()
                                         .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)))
                                         .title("" + subLocality + ", " + state + ", " + country + "")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
@@ -272,10 +308,10 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                         Log.d("lat", lat);
                         Log.d("lon", lon);
 
-                        googleMap.setMyLocationEnabled(false);
+                        map.setMyLocationEnabled(false);
                         CameraPosition cameraPosition = new CameraPosition.Builder().target(myLocation).zoom(15.0f).build();
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                        googleMap.moveCamera(cameraUpdate);
+                        map.moveCamera(cameraUpdate);
 
 
                     }
@@ -291,6 +327,19 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+
+
+ /*   private void sendRequest() {
+
+
+
+        try {
+            new DirectionFinder(this, origin, destination).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+*/
 
     private void doSomethingRepeatedly() {
         timer = new Timer();
@@ -355,9 +404,9 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                                                     notiName.setText(response.body().getData().get(0).getUserName());
                                                     Log.d("nameiudhdu", response.body().getData().get(0).getUserName());
 
-                                                    b.notificationId = response.body().getData().get(0).getBookingId();
+                                                    notiId = response.body().getData().get(0).getBookingId();
 
-                                                    Log.d("NotificationId", b.notificationId);
+                                                    Log.d("NotificationId", notiId);
 
                                                     String pickLat = response.body().getData().get(0).getPickUpLatitude();
                                                     String pickLon = response.body().getData().get(0).getPickUpLongitude();
@@ -442,7 +491,6 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         String id = pref.getString("driverId", "");
 
 
-
         final Bean b = (Bean) getContext().getApplicationContext();
 
 
@@ -453,17 +501,21 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                 .build();
         Allapi cr = retrofit.create(Allapi.class);
 
-        Call<rideStatusBean> callRide = cr.rideStatus(id,b.notificationId, lat, lon);
+        Call<rideStatusBean> callRide = cr.rideStatus(id, notiId, lat, lon);
         callRide.enqueue(new Callback<rideStatusBean>() {
             @Override
             public void onResponse(Call<rideStatusBean> call, Response<rideStatusBean> response) {
 
-                if (Objects.equals(response.body().getStatus(), 1)){
+                if (Objects.equals(response.body().getStatus(), 1)) {
                     String pickLat = response.body().getData().getPickUpLatitude();
                     String pickLon = response.body().getData().getPickUpLongitude();
                     String dropLat = response.body().getData().getDropLatitude();
                     String dropLon = response.body().getData().getDropLongitude();
                     Log.d("dfsdsfgsgsfsgsdgd", response.body().getData().getUserName());
+
+                    origin = new LatLng(Double.parseDouble(pickLat), Double.parseDouble(pickLon));
+                    destination = new LatLng(Double.parseDouble(dropLat), Double.parseDouble(dropLon));
+
                 }
             }
 
@@ -471,7 +523,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
             public void onFailure(Call<rideStatusBean> call, Throwable t) {
 
 
-                Log.d("dfsgsgsdgsdgsgsdgssssd",t.toString());
+                Log.d("dfsgsgsdgsdgsgsdgssssd", t.toString());
 
             }
         });
@@ -520,10 +572,9 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                     timer.cancel();
                     noti.setVisibility(View.GONE);
                     call2.cancel();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
 
                 String id = pref.getString("driverId", "");
@@ -625,7 +676,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                     timer.cancel();
                     noti.setVisibility(View.GONE);
                     call2.cancel();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -671,4 +722,62 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
 
 
     }
+
+   /* @Override
+    public void onDirectionFinderStart() {
+
+        if (originMarkers != null) {
+            for (Marker marker : originMarkers) {
+                marker.remove();
+            }
+        }
+
+        if (destinationMarkers != null) {
+            for (Marker marker : destinationMarkers) {
+                marker.remove();
+            }
+        }
+
+        if (polylinePaths != null) {
+            for (Polyline polyline:polylinePaths ) {
+                polyline.remove();
+            }
+        }
+
+    }*/
+
+/*    @Override
+    public void onDirectionFinderSuccess(List<Route> routes) {
+
+       // progressDialog.dismiss();
+        polylinePaths = new ArrayList<>();
+        originMarkers = new ArrayList<>();
+        destinationMarkers = new ArrayList<>();
+
+        for (Route route : routes) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+            time.setText(route.duration.text);
+            value.setText(route.distance.text);
+
+            originMarkers.add(map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+                    .title(route.startAddress)
+                    .position(route.startLocation)));
+            destinationMarkers.add(map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                    .title(route.endAddress)
+                    .position(route.endLocation)));
+
+            PolylineOptions polylineOptions = new PolylineOptions().
+                    geodesic(true).
+                    color(Color.BLACK).
+                    width(10);
+
+            for (int i = 0; i < route.points.size(); i++)
+                polylineOptions.add(route.points.get(i));
+
+            polylinePaths.add(map.addPolyline(polylineOptions));
+        }
+
+    }*/
 }
