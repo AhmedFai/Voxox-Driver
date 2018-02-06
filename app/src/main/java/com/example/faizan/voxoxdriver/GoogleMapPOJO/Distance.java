@@ -13,9 +13,11 @@ public class Distance {
     public String text;
     @SerializedName("value")
     @Expose
-    private Integer value;
+    private int value;
 
     public Distance(String text, int value) {
+        this.text = text;
+        this.value = value;
     }
 
     public String getText() {
@@ -26,11 +28,11 @@ public class Distance {
         this.text = text;
     }
 
-    public Integer getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(int value) {
         this.value = value;
     }
 }

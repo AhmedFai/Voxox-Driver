@@ -5,15 +5,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,8 +33,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinder;
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinderListener;
+
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.Route;
 import com.example.faizan.voxoxdriver.acceptDenyPOJO.acceptDenyBean;
 import com.example.faizan.voxoxdriver.driverNotificationPOJO.notificationBean;
@@ -39,6 +47,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,6 +55,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -57,6 +68,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import github.nisrulz.easydeviceinfo.base.EasyLocationMod;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,25 +78,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
-public class BookRideFragment extends Fragment implements View.OnClickListener {
+public class BookRideFragment extends Fragment implements View.OnClickListener , DirectionFinderListener{
     SupportMapFragment mSupportMapFragment;
 
     Toolbar toolbar;
     Timer timer;
     SharedPreferences pref;
     SharedPreferences.Editor edit;
-    CardView noti, duty,start;
+    CardView noti, duty, start;
     ProgressBar bar;
-    ImageView offI, onI, homeI, accept, deny;
+    ImageView offI, onI, homeI;
     LinearLayout offLin, onLin, homeLin;
     String notiId = " ";
 
     TextView notiName, pickupLocation;
+    Button buttonStrt, accept, deny;
 
     GoogleMap map;
-    TextView time,value;
+    TextView time, value;
 
     LatLng origin, destination;
+    CircleImageView user;
 
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
@@ -102,7 +116,6 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_book_ride, container, false);
 
         toolbar = ((MainActivity) getActivity()).findViewById(R.id.toolbar);
-
         offLin = (LinearLayout) view.findViewById(R.id.offLine);
         onLin = (LinearLayout) view.findViewById(R.id.onLine);
         homeLin = (LinearLayout) view.findViewById(R.id.homeLine);
@@ -115,18 +128,26 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         bar = (ProgressBar) view.findViewById(R.id.progress);
         notiName = (TextView) view.findViewById(R.id.reqName);
         pickupLocation = (TextView) view.findViewById(R.id.pickupLoc);
-        accept = (ImageView) view.findViewById(R.id.accept);
-        deny = (ImageView) view.findViewById(R.id.deny);
+        accept = (Button) view.findViewById(R.id.accept);
+        deny = (Button) view.findViewById(R.id.deny);
         start = (CardView) view.findViewById(R.id.start);
-        duty = (CardView)view.findViewById(R.id.dutycard);
-        time = (TextView) view.findViewById(R.id.esTime) ;
+        duty = (CardView) view.findViewById(R.id.dutycard);
+        time = (TextView) view.findViewById(R.id.esTime);
         value = (TextView) view.findViewById(R.id.value);
+        buttonStrt = (Button) view.findViewById(R.id.buttonStrt);
+        user = (CircleImageView) view.findViewById(R.id.userPic);
+        buttonStrt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //sendRequest();
+               // sendRequest();
 
                 timer.cancel();
                 call2.cancel();
@@ -164,7 +185,6 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
 
 
                         statusForRide();
-
 
 
                     }
@@ -239,10 +259,6 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
         });
 
 
-
-
-
-
         pref = getContext().getSharedPreferences("pref", Activity.MODE_PRIVATE);
         edit = pref.edit();
 
@@ -263,7 +279,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                 public void onMapReady(final GoogleMap googleMap) {
                     if (googleMap != null) {
 
-                        map=googleMap;
+                        map = googleMap;
 
                         map.getUiSettings().setAllGesturesEnabled(true);
 
@@ -294,10 +310,10 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                                 String country = listAdresses.get(0).getCountryName();
                                 String subLocality = listAdresses.get(0).getSubLocality();
 
-                                map.addMarker(new MarkerOptions()
+                                originMarkers.add(map.addMarker(new MarkerOptions()
                                         .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)))
                                         .title("" + subLocality + ", " + state + ", " + country + "")
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
+                                        .icon(bitmapDescriptorFromVector(getContext(),R.drawable.pin))));
 
 
                             }
@@ -328,8 +344,46 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    public static Bitmap getViewBitmap(View view)
+    {
+//Get the dimensions of the view so we can re-layout the view at its current size
+//and create a bitmap of the same size
+        int width = view.getWidth();
+        int height = view.getHeight();
 
- /*   private void sendRequest() {
+        int measuredWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int measuredHeight = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+
+//Cause the view to re-layout
+        view.measure(measuredWidth, measuredHeight);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+//Create a bitmap backed Canvas to draw the view into
+        Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+
+//Now that the view is laid out and we have a canvas, ask the view to draw itself into the canvas
+        view.draw(c);
+
+        return b;
+    }
+
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.pin);
+        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+//Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
+//vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        background.draw(canvas);
+//vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
+
+    private void sendRequest() {
 
 
 
@@ -339,7 +393,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
     }
-*/
+
+
 
     private void doSomethingRepeatedly() {
         timer = new Timer();
@@ -402,6 +457,15 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
                                                 try {
 
                                                     notiName.setText(response.body().getData().get(0).getUserName());
+
+
+                                                    DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                                                            .cacheOnDisk(true).resetViewBeforeLoading(true).build();
+
+                                                    ImageLoader loader = ImageLoader.getInstance();
+
+                                                    loader.displayImage( response.body().getData().get(0).getPicture(), user, options);
+
                                                     Log.d("nameiudhdu", response.body().getData().get(0).getUserName());
 
                                                     notiId = response.body().getData().get(0).getBookingId();
@@ -723,7 +787,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
 
     }
 
-   /* @Override
+
+    @Override
     public void onDirectionFinderStart() {
 
         if (originMarkers != null) {
@@ -744,9 +809,9 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-    }*/
+    }
 
-/*    @Override
+    @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
 
        // progressDialog.dismiss();
@@ -779,5 +844,5 @@ public class BookRideFragment extends Fragment implements View.OnClickListener {
             polylinePaths.add(map.addPolyline(polylineOptions));
         }
 
-    }*/
+    }
 }
