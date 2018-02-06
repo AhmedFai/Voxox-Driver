@@ -78,7 +78,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
-public class BookRideFragment extends Fragment implements View.OnClickListener , DirectionFinderListener{
+public class BookRideFragment extends Fragment implements View.OnClickListener, DirectionFinderListener {
     SupportMapFragment mSupportMapFragment;
 
     Toolbar toolbar;
@@ -147,7 +147,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // sendRequest();
+                // sendRequest();
 
                 timer.cancel();
                 call2.cancel();
@@ -313,7 +313,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
                                 originMarkers.add(map.addMarker(new MarkerOptions()
                                         .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)))
                                         .title("" + subLocality + ", " + state + ", " + country + "")
-                                        .icon(bitmapDescriptorFromVector(getContext(),R.drawable.pin))));
+                                        .icon(bitmapDescriptorFromVector(getContext(), R.drawable.pin))));
 
 
                             }
@@ -344,8 +344,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
     }
 
 
-    public static Bitmap getViewBitmap(View view)
-    {
+    public static Bitmap getViewBitmap(View view) {
 //Get the dimensions of the view so we can re-layout the view at its current size
 //and create a bitmap of the same size
         int width = view.getWidth();
@@ -382,9 +381,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
     }
 
 
-
     private void sendRequest() {
-
 
 
         try {
@@ -393,7 +390,6 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
             e.printStackTrace();
         }
     }
-
 
 
     private void doSomethingRepeatedly() {
@@ -464,7 +460,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
 
                                                     ImageLoader loader = ImageLoader.getInstance();
 
-                                                    loader.displayImage( response.body().getData().get(0).getPicture(), user, options);
+                                                    loader.displayImage(response.body().getData().get(0).getPicture(), user, options);
 
                                                     Log.d("nameiudhdu", response.body().getData().get(0).getUserName());
 
@@ -804,7 +800,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
         }
 
         if (polylinePaths != null) {
-            for (Polyline polyline:polylinePaths ) {
+            for (Polyline polyline : polylinePaths) {
                 polyline.remove();
             }
         }
@@ -814,7 +810,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener ,
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
 
-       // progressDialog.dismiss();
+        // progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
