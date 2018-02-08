@@ -91,6 +91,12 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     LinearLayout offLin, onLin, homeLin;
     String notiId = " ";
 
+    String pickUpLat = "";
+    String pickUpLng = "";
+
+    String dropLat = "";
+    String dropLng = "";
+
     TextView notiName, pickupLocation;
     Button buttonStrt, accept, deny;
 
@@ -147,7 +153,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // sendRequest();
+
 
                 timer.cancel();
                 call2.cancel();
@@ -186,6 +192,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
                         statusForRide();
 
+                        sendRequest();
 
                     }
 
@@ -383,12 +390,19 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
     private void sendRequest() {
 
+        Log.d("send request", "hit");
 
-        try {
-            new DirectionFinder(this, origin, destination).execute();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (pickUpLat.length() > 0 && pickUpLng.length() > 0) {
+
+
+            try {
+                new DirectionFinder(this, pickUpLat, pickUpLng, dropLat, dropLng).execute();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
+
+
     }
 
 
@@ -567,14 +581,18 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             public void onResponse(Call<rideStatusBean> call, Response<rideStatusBean> response) {
 
                 if (Objects.equals(response.body().getStatus(), 1)) {
-                    String pickLat = response.body().getData().getPickUpLatitude();
-                    String pickLon = response.body().getData().getPickUpLongitude();
-                    String dropLat = response.body().getData().getDropLatitude();
-                    String dropLon = response.body().getData().getDropLongitude();
+                    pickUpLat = response.body().getData().getPickUpLatitude();
+                    pickUpLng = response.body().getData().getPickUpLongitude();
+                    dropLat = response.body().getData().getDropLatitude();
+                    dropLng = response.body().getData().getDropLongitude();
+                    Log.d("pickup wale Lat", response.body().getData().getPickUpLatitude());
+                    Log.d("pickup wale lng", response.body().getData().getPickUpLongitude());
+                    Log.d("drop wale lat", response.body().getData().getDropLatitude());
+                    Log.d("drop wale lng", response.body().getData().getDropLongitude());
                     Log.d("dfsdsfgsgsfsgsdgd", response.body().getData().getUserName());
 
-                    origin = new LatLng(Double.parseDouble(pickLat), Double.parseDouble(pickLon));
-                    destination = new LatLng(Double.parseDouble(dropLat), Double.parseDouble(dropLon));
+                   /* origin = new LatLng(Double.parseDouble(pickLat), Double.parseDouble(pickLon));
+                    destination = new LatLng(Double.parseDouble(dropLat), Double.parseDouble(dropLon));*/
 
                 }
             }
@@ -810,24 +828,37 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
 
+        Log.d("success method", "sucssdced");
+
         // progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
+
+        map.clear();
 
         for (Route route : routes) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
             time.setText(route.duration.text);
             value.setText(route.distance.text);
 
-            originMarkers.add(map.addMarker(new MarkerOptions()
+            Log.d("duration", route.duration.text);
+            Log.d("distance", route.distance.text);
+
+            Marker marker1= map.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
                     .title(route.startAddress)
-                    .position(route.startLocation)));
-            destinationMarkers.add(map.addMarker(new MarkerOptions()
+                    .position(route.startLocation));
+
+            originMarkers.add(marker1);
+            marker1.showInfoWindow();
+
+            Marker marker2 = map.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
                     .title(route.endAddress)
-                    .position(route.endLocation)));
+                    .position(route.endLocation));
+            destinationMarkers.add(marker2);
+            marker2.showInfoWindow();
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
