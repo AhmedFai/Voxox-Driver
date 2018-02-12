@@ -3,6 +3,7 @@ package com.example.faizan.voxoxdriver;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -38,9 +39,11 @@ import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinder;
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinderListener;
 
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.Route;
+import com.example.faizan.voxoxdriver.StartRidePOJO.StartRideBean;
 import com.example.faizan.voxoxdriver.acceptDenyPOJO.acceptDenyBean;
 import com.example.faizan.voxoxdriver.driverNotificationPOJO.notificationBean;
 import com.example.faizan.voxoxdriver.driverStatusPOJO.StatusBean;
+import com.example.faizan.voxoxdriver.finishRidePOJO.finishRideBean;
 import com.example.faizan.voxoxdriver.rideStatusPOJO.rideStatusBean;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -88,7 +91,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     CardView noti, duty, start;
     ProgressBar bar;
     ImageView offI, onI, homeI;
-    LinearLayout offLin, onLin, homeLin;
+    LinearLayout offLin, onLin, homeLin, nav, duration;
     String notiId = " ";
 
     String pickUpLat = "";
@@ -97,8 +100,10 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     String dropLat = "";
     String dropLng = "";
 
+    String currentlat, currentLng;
+
     TextView notiName, pickupLocation;
-    Button buttonStrt, accept, deny;
+    Button buttonStrt, accept, deny, go, finishRide;
 
     GoogleMap map;
     TextView time, value;
@@ -142,9 +147,107 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         value = (TextView) view.findViewById(R.id.value);
         buttonStrt = (Button) view.findViewById(R.id.buttonStrt);
         user = (CircleImageView) view.findViewById(R.id.userPic);
+        nav = (LinearLayout) view.findViewById(R.id.nav);
+        duration = (LinearLayout) view.findViewById(R.id.duration);
+        go = (Button) view.findViewById(R.id.go);
+        finishRide = (Button) view.findViewById(R.id.finish);
+
+        finishRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                bar.setVisibility(View.VISIBLE);
+                String id = pref.getString("driverId", "");
+                final Bean b = (Bean) getContext().getApplicationContext();
+
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(b.baseURL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                Allapi cr = retrofit.create(Allapi.class);
+                Call<finishRideBean> call = cr.rideFinish(id, notiId, currentlat, currentLng);
+                call.enqueue(new Callback<finishRideBean>() {
+                    @Override
+                    public void onResponse(Call<finishRideBean> call, Response<finishRideBean> response) {
+                        if (Objects.equals(response.body().getStatus(), 1)) {
+                            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            bar.setVisibility(View.GONE);
+                            duty.setVisibility(View.VISIBLE);
+                            start.setVisibility(View.GONE);
+
+
+                        } else {
+                            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            bar.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<finishRideBean> call, Throwable t) {
+                        bar.setVisibility(View.GONE);
+
+                    }
+                });
+
+            }
+        });
+
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + dropLat + "," + dropLng);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
         buttonStrt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                bar.setVisibility(View.VISIBLE);
+                String id = pref.getString("driverId", "");
+
+                final Bean b = (Bean) getContext().getApplicationContext();
+
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(b.baseURL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                Allapi cr = retrofit.create(Allapi.class);
+                Call<StartRideBean> callStart = cr.rideStart(id, notiId, currentlat, currentLng);
+
+                callStart.enqueue(new Callback<StartRideBean>() {
+                    @Override
+                    public void onResponse(Call<StartRideBean> call, Response<StartRideBean> response) {
+
+                        if (Objects.equals(response.body().getStatus(), 1)) {
+                            bar.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            duration.setVisibility(View.GONE);
+                            nav.setVisibility(View.VISIBLE);
+
+                        } else {
+                            Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            bar.setVisibility(View.GONE);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<StartRideBean> call, Throwable t) {
+                        bar.setVisibility(View.GONE);
+
+                    }
+                });
+
 
             }
         });
@@ -192,7 +295,6 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
                         statusForRide();
 
-                        sendRequest();
 
                     }
 
@@ -394,6 +496,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
         if (pickUpLat.length() > 0 && pickUpLng.length() > 0) {
 
+            Log.d("log ke under", "yahi hai");
 
             try {
                 new DirectionFinder(this, pickUpLat, pickUpLng, dropLat, dropLng).execute();
@@ -560,8 +663,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             return;
         }
         double[] l = easyLocationMod.getLatLong();
-        String lat = String.valueOf(l[0]);
-        String lon = String.valueOf(l[1]);
+        currentlat = String.valueOf(l[0]);
+        currentLng = String.valueOf(l[1]);
         String id = pref.getString("driverId", "");
 
 
@@ -575,7 +678,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                 .build();
         Allapi cr = retrofit.create(Allapi.class);
 
-        Call<rideStatusBean> callRide = cr.rideStatus(id, notiId, lat, lon);
+        Call<rideStatusBean> callRide = cr.rideStatus(id, notiId, currentlat, currentLng);
         callRide.enqueue(new Callback<rideStatusBean>() {
             @Override
             public void onResponse(Call<rideStatusBean> call, Response<rideStatusBean> response) {
@@ -593,6 +696,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
                    /* origin = new LatLng(Double.parseDouble(pickLat), Double.parseDouble(pickLon));
                     destination = new LatLng(Double.parseDouble(dropLat), Double.parseDouble(dropLon));*/
+
+                    sendRequest();
 
                 }
             }
@@ -845,8 +950,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             Log.d("duration", route.duration.text);
             Log.d("distance", route.distance.text);
 
-            Marker marker1= map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+            Marker marker1 = map.addMarker(new MarkerOptions()
+                    .icon(bitmapDescriptorFromVector(getContext(), R.drawable.pin))
                     .title(route.startAddress)
                     .position(route.startLocation));
 
@@ -854,7 +959,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             marker1.showInfoWindow();
 
             Marker marker2 = map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                    // .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
                     .title(route.endAddress)
                     .position(route.endLocation));
             destinationMarkers.add(marker2);
