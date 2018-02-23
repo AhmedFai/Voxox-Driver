@@ -39,7 +39,7 @@ public class SupportFragment extends Fragment {
 
         byday = (CardView) view.findViewById(R.id.byDay);
 
-        bank = (CardView) view.findViewById(R.id.bankCard);
+       // bank = (CardView) view.findViewById(R.id.bankCard);
 
         opBill = (LinearLayout) view.findViewById(R.id.operatorBill);
 
@@ -69,13 +69,13 @@ public class SupportFragment extends Fragment {
             }
         });
 
-        bank.setOnClickListener(new View.OnClickListener() {
+  /*      bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent b = new Intent(getContext(),BankByDay.class);
                 startActivity(b);
             }
-        });
+        });*/
         return view;
     }
 

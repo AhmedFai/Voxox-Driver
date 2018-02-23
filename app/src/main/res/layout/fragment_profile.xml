@@ -33,7 +33,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="-60dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/pictures"
                 xmnls:civ_border_color="#fff"
                 xmnls:civ_border_width="2dp" />
 
@@ -102,6 +101,15 @@
 
 
             </LinearLayout>
+
+
+         <!--   <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInBottom="true"
+                android:visibility="gone" />
+-->
 
 
         </RelativeLayout>

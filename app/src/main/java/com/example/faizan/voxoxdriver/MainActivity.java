@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,17 +19,23 @@ import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.w3c.dom.Text;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     AHBottomNavigation bottom;
     Toolbar toolbar;
     DrawerLayout drawer;
     TextView refer, training, money, news, care,manage,logout;
-    SharedPreferences pref;
+   static SharedPreferences pref;
 
     SharedPreferences.Editor edit;
+
+    static CircleImageView image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         logout = (TextView)findViewById(R.id.logout);
         pref = getApplication().getSharedPreferences("pref", MODE_PRIVATE);
         edit = pref.edit();
+        image = (CircleImageView) findViewById(R.id.profile);
+
+        loadImage();
 
 
         manage.setOnClickListener(new View.OnClickListener() {
@@ -385,6 +395,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void loadImage(){
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                .cacheOnDisk(true).resetViewBeforeLoading(true).build();
+
+        ImageLoader loader = ImageLoader.getInstance();
+        Log.d("LoadImage ka method", "dkjashjsfja");
+
+
+        loader.displayImage(pref.getString("image" , "") , image , options);
     }
 
 }

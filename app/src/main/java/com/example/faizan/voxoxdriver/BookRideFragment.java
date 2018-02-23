@@ -821,6 +821,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                         .build();
                 Allapi cr2 = retrofit2.create(Allapi.class);
                 call2 = cr2.status(id2, "on");
+                Log.d("driverkiId", id2);
                 call2.enqueue(new Callback<StatusBean>() {
                     @Override
                     public void onResponse(Call<StatusBean> call, Response<StatusBean> response) {
