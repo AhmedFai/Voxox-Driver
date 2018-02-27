@@ -7,18 +7,36 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.faizan.voxoxdriver.TodaySummaryPOJO.SummaryBean;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
 public class SupportFragment extends Fragment {
 
     CardView cBalance, byday,bank;
     LinearLayout opBill;
+    ProgressBar bar;
+    TextView balance, payment, cash, hour;
 
     Toolbar toolbar;
     @Override
@@ -38,10 +56,15 @@ public class SupportFragment extends Fragment {
         cBalance = (CardView) view.findViewById(R.id.currentBalance);
 
         byday = (CardView) view.findViewById(R.id.byDay);
+        balance = (TextView)view.findViewById(R.id.bal);
+        payment = (TextView)view.findViewById(R.id.pay);
+        cash = (TextView)view.findViewById(R.id.cash);
+        hour = (TextView)view.findViewById(R.id.hour);
 
        // bank = (CardView) view.findViewById(R.id.bankCard);
 
         opBill = (LinearLayout) view.findViewById(R.id.operatorBill);
+        bar = (ProgressBar)view.findViewById(R.id.progress);
 
         opBill.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +99,51 @@ public class SupportFragment extends Fragment {
                 startActivity(b);
             }
         });*/
+
+
+        bar.setVisibility(View.VISIBLE);
+        final Bean b = (Bean) getContext().getApplicationContext();
+
+        Retrofit retrofit2 = new Retrofit.Builder()
+                .baseUrl(b.baseURL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Allapi cr = retrofit2.create(Allapi.class);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = mdformat.format(calendar.getTime());
+
+        Log.d("date" , strDate);
+
+       // String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+        Call<SummaryBean> call = cr.summary(b.driverId,strDate);
+        call.enqueue(new Callback<SummaryBean>() {
+            @Override
+            public void onResponse(Call<SummaryBean> call, Response<SummaryBean> response) {
+                if (Objects.equals(response.body().getStatus(),"1")){
+                    bar.setVisibility(View.GONE);
+
+                    balance.setText(response.body().getData().getCurrentBalance());
+                    payment.setText(response.body().getData().getTodaysPayment());
+                    cash.setText(response.body().getData().getCashCollected());
+                    hour.setText(response.body().getData().getLoginHours());
+
+
+                }else {
+                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    bar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SummaryBean> call, Throwable t) {
+                bar.setVisibility(View.GONE);
+
+            }
+        });
+
         return view;
     }
 

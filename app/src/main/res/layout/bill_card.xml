@@ -33,10 +33,10 @@
                     android:textColor="#000" />
 
                 <TextView
+                    android:id="@+id/inBooking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="6"
                     android:textColor="#000"
                     android:textSize="20sp" />
 
@@ -59,12 +59,12 @@
                     android:textColor="#000" />
 
                 <TextView
+                    android:id="@+id/opBill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:drawableLeft="@drawable/rupee_icon"
                     android:gravity="center"
-                    android:text="650"
                     android:textColor="#000"
                     android:textSize="20sp" />
 
@@ -87,12 +87,12 @@
                     android:textColor="#000" />
 
                 <TextView
+                    android:id="@+id/toIncent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:drawableLeft="@drawable/rupee_icon"
                     android:gravity="center"
-                    android:text="650"
                     android:textColor="#000"
                     android:textSize="20sp" />
 
@@ -115,14 +115,14 @@
                 android:text="Last Updated :  " />
 
             <TextView
+                android:id="@+id/last"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fri, 29 Dec 2017  " />
+                android:layout_height="wrap_content" />
 
-            <TextView
+          <!--  <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="02:22 PM" />
+                android:text="02:22 PM" />-->
 
         </LinearLayout>
 

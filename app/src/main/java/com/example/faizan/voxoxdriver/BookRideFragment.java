@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.faizan.voxoxdriver.CurrentOperatorBillPOJO.CurrentBillBean;
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinder;
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinderListener;
 
@@ -103,10 +104,12 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     String currentlat, currentLng;
 
     TextView notiName, pickupLocation;
+    TextView balance, payment, cash, hour;
+
     Button buttonStrt, accept, deny, go, finishRide;
 
     GoogleMap map;
-    TextView time, value;
+    TextView time, value, incentBooking, opBill, totalIncent, lastUpdate;
 
     LatLng origin, destination;
     CircleImageView user;
@@ -129,13 +132,13 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         toolbar = ((MainActivity) getActivity()).findViewById(R.id.toolbar);
         offLin = (LinearLayout) view.findViewById(R.id.offLine);
         onLin = (LinearLayout) view.findViewById(R.id.onLine);
-        homeLin = (LinearLayout) view.findViewById(R.id.homeLine);
+      //  homeLin = (LinearLayout) view.findViewById(R.id.homeLine);
         offI = (ImageView) view.findViewById(R.id.offIcon);
         onI = (ImageView) view.findViewById(R.id.onIcon);
-        homeI = (ImageView) view.findViewById(R.id.homeIcon);
+        //homeI = (ImageView) view.findViewById(R.id.homeIcon);
         offLin.setOnClickListener(this);
         onLin.setOnClickListener(this);
-        homeLin.setOnClickListener(this);
+       // homeLin.setOnClickListener(this);
         bar = (ProgressBar) view.findViewById(R.id.progress);
         notiName = (TextView) view.findViewById(R.id.reqName);
         pickupLocation = (TextView) view.findViewById(R.id.pickupLoc);
@@ -151,6 +154,13 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         duration = (LinearLayout) view.findViewById(R.id.duration);
         go = (Button) view.findViewById(R.id.go);
         finishRide = (Button) view.findViewById(R.id.finish);
+
+
+        incentBooking = (TextView)view.findViewById(R.id.inBooking);
+        opBill = (TextView)view.findViewById(R.id.opBill);
+        totalIncent = (TextView)view.findViewById(R.id.toIncent);
+        lastUpdate = (TextView)view.findViewById(R.id.last);
+
 
         finishRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +186,55 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                             bar.setVisibility(View.GONE);
                             duty.setVisibility(View.VISIBLE);
                             start.setVisibility(View.GONE);
+                            map.clear();
+                            doSomethingRepeatedly();
+
+
+                            EasyLocationMod easyLocationMod = new EasyLocationMod(getContext());
+
+                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+                            double[] l = easyLocationMod.getLatLong();
+                            String lat = String.valueOf(l[0]);
+                            String lon = String.valueOf(l[1]);
+                            LatLng myLocation = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            try {
+                                List<Address> listAdresses = geocoder.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lon), 1);
+                                if (null != listAdresses && listAdresses.size() > 0) {
+                                    String address = listAdresses.get(0).getAddressLine(0);
+                                    String state = listAdresses.get(0).getAdminArea();
+                                    String country = listAdresses.get(0).getCountryName();
+                                    String subLocality = listAdresses.get(0).getSubLocality();
+
+                                    originMarkers.add(map.addMarker(new MarkerOptions()
+                                            .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)))
+                                            .title("" + subLocality + ", " + state + ", " + country + "")
+                                            .icon(bitmapDescriptorFromVector(getContext(), R.drawable.pin))));
+
+
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            Log.d("lat", lat);
+                            Log.d("lon", lon);
+
+                            map.setMyLocationEnabled(false);
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(myLocation).zoom(15.0f).build();
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                            map.moveCamera(cameraUpdate);
+
+
 
 
                         } else {
@@ -736,6 +795,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             }
         });*/
 
+        currentOperator();
+
 
     }
 
@@ -748,7 +809,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             case R.id.offLine: {
                 offI.setBackgroundResource(R.drawable.backcar);
                 onI.setBackgroundResource(R.drawable.back_circle);
-                homeI.setBackgroundResource(R.drawable.back_circle);
+                //homeI.setBackgroundResource(R.drawable.back_circle);
 
 
                 try {
@@ -805,7 +866,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
             {
                 offI.setBackgroundResource(R.drawable.back_circle);
                 onI.setBackgroundResource(R.drawable.backcar);
-                homeI.setBackgroundResource(R.drawable.back_circle);
+               // homeI.setBackgroundResource(R.drawable.back_circle);
 
 
                 String id2 = pref.getString("driverId", "");
@@ -849,6 +910,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                 break;
             }
 
+/*
             case R.id.homeLine: {
 
                 offI.setBackgroundResource(R.drawable.back_circle);
@@ -901,6 +963,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                 });
                 break;
             }
+*/
 
         }
 
@@ -976,6 +1039,61 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
             polylinePaths.add(map.addPolyline(polylineOptions));
         }
+
+    }
+
+    public void currentOperator(){
+
+        bar.setVisibility(View.VISIBLE);
+        final Bean b = (Bean) getContext().getApplicationContext();
+
+
+        Retrofit retrofit2 = new Retrofit.Builder()
+                .baseUrl(b.baseURL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Allapi cr = retrofit2.create(Allapi.class);
+        Call<CurrentBillBean> call = cr.current(b.driverId);
+        call.enqueue(new Callback<CurrentBillBean>() {
+            @Override
+            public void onResponse(Call<CurrentBillBean> call, Response<CurrentBillBean> response) {
+
+                if (Objects.equals(response.body().getStatus(),"1")){
+
+                    bar.setVisibility(View.GONE);
+                    incentBooking.setText(response.body().getData().getIncentiveBooking());
+                    opBill.setText(response.body().getData().getOperatorBill());
+                    totalIncent.setText(response.body().getData().getTotalIncentive());
+                    lastUpdate.setText(response.body().getData().getLastUpdateTime());
+
+                    if (Objects.equals(response.body().getData().getDutyStatusCode(),"1")){
+
+                        offI.setBackgroundResource(R.drawable.back_circle);
+                        onI.setBackgroundResource(R.drawable.backcar);
+
+                    }else {
+
+                        offI.setBackgroundResource(R.drawable.backcar);
+                        onI.setBackgroundResource(R.drawable.back_circle);
+
+                    }
+
+
+                }else {
+                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    bar.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CurrentBillBean> call, Throwable t) {
+                bar.setVisibility(View.GONE);
+
+            }
+        });
+
 
     }
 }

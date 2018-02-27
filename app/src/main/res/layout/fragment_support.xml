@@ -5,6 +5,11 @@
     android:orientation="vertical"
     tools:context="com.example.faizan.voxoxdriver.SupportFragment">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,6 +68,7 @@
                         android:gravity="end">
 
                         <TextView
+                            android:id="@+id/bal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -70,9 +76,8 @@
                             android:drawablePadding="2dp"
                             android:drawableStart="@drawable/rupee_icon"
                             android:gravity="center_vertical"
-                            android:text="149"
                             android:textColor="#000"
-                            android:textSize="16sp" />
+                            android:textSize="15sp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -139,6 +144,7 @@
                         android:gravity="end">
 
                         <TextView
+                            android:id="@+id/pay"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -146,9 +152,8 @@
                             android:drawablePadding="2dp"
                             android:drawableStart="@drawable/rupee_icon"
                             android:gravity="center_vertical"
-                            android:text="149"
                             android:textColor="#000"
-                            android:textSize="16sp" />
+                            android:textSize="15sp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -238,8 +243,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
                                 android:drawableEnd="@drawable/chevron_right"
-                                android:drawableStart="@drawable/rupee_icon"
-                                android:text="645"
                                 android:textColor="#000"
                                 android:textSize="16sp" />
 
@@ -296,11 +299,11 @@
                             android:gravity="end">
 
                             <TextView
+                                android:id="@+id/cash"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="35dp"
                                 android:drawableLeft="@drawable/rupee_icon"
-                                android:text="645"
 
                                 android:textColor="#000"
                                 android:textSize="16sp" />
@@ -359,10 +362,10 @@
                             android:gravity="end">
 
                             <TextView
+                                android:id="@+id/hour"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="35dp"
-                                android:text="04:45"
                                 android:textColor="#000"
                                 android:textSize="16sp" />
 
@@ -508,4 +511,15 @@
 
 
     </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="#ffcd2e"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
 </android.support.v4.widget.NestedScrollView>
