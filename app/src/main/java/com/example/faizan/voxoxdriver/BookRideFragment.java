@@ -107,6 +107,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     TextView balance, payment, cash, hour;
 
     Button buttonStrt, accept, deny, go, finishRide;
+    ConnectionDetector cd;
 
     GoogleMap map;
     TextView time, value, incentBooking, opBill, totalIncent, lastUpdate;
@@ -154,6 +155,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         duration = (LinearLayout) view.findViewById(R.id.duration);
         go = (Button) view.findViewById(R.id.go);
         finishRide = (Button) view.findViewById(R.id.finish);
+        cd = new ConnectionDetector(getContext());
 
 
         incentBooking = (TextView)view.findViewById(R.id.inBooking);
@@ -834,7 +836,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 Allapi cr = retrofit.create(Allapi.class);
-                Call<StatusBean> call = cr.status(id, "off");
+                Call<StatusBean> call = cr.status(id, "0");
                 call.enqueue(new Callback<StatusBean>() {
                     @Override
                     public void onResponse(Call<StatusBean> call, Response<StatusBean> response) {
@@ -881,7 +883,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 Allapi cr2 = retrofit2.create(Allapi.class);
-                call2 = cr2.status(id2, "on");
+                call2 = cr2.status(id2, "1");
                 Log.d("driverkiId", id2);
                 call2.enqueue(new Callback<StatusBean>() {
                     @Override
@@ -1044,55 +1046,66 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
     public void currentOperator(){
 
-        bar.setVisibility(View.VISIBLE);
-        final Bean b = (Bean) getContext().getApplicationContext();
+        if (cd.isConnectingToInternet()){
+
+            bar.setVisibility(View.VISIBLE);
+            final Bean b = (Bean) getContext().getApplicationContext();
 
 
-        Retrofit retrofit2 = new Retrofit.Builder()
-                .baseUrl(b.baseURL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        Allapi cr = retrofit2.create(Allapi.class);
-        Call<CurrentBillBean> call = cr.current(b.driverId);
-        call.enqueue(new Callback<CurrentBillBean>() {
-            @Override
-            public void onResponse(Call<CurrentBillBean> call, Response<CurrentBillBean> response) {
+            Retrofit retrofit2 = new Retrofit.Builder()
+                    .baseUrl(b.baseURL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            Allapi cr = retrofit2.create(Allapi.class);
+            Call<CurrentBillBean> call = cr.current(b.driverId);
+            call.enqueue(new Callback<CurrentBillBean>() {
+                @Override
+                public void onResponse(Call<CurrentBillBean> call, Response<CurrentBillBean> response) {
 
-                if (Objects.equals(response.body().getStatus(),"1")){
+                    if (Objects.equals(response.body().getStatus(),"1")){
 
-                    bar.setVisibility(View.GONE);
-                    incentBooking.setText(response.body().getData().getIncentiveBooking());
-                    opBill.setText(response.body().getData().getOperatorBill());
-                    totalIncent.setText(response.body().getData().getTotalIncentive());
-                    lastUpdate.setText(response.body().getData().getLastUpdateTime());
+                        bar.setVisibility(View.GONE);
+                        incentBooking.setText(response.body().getData().getIncentiveBooking());
+                        opBill.setText(response.body().getData().getOperatorBill());
+                        totalIncent.setText(response.body().getData().getTotalIncentive());
+                        lastUpdate.setText(response.body().getData().getLastUpdateTime());
 
-                    if (Objects.equals(response.body().getData().getDutyStatusCode(),"1")){
+                        if (Objects.equals(response.body().getData().getDutyStatusCode(),"1")){
 
-                        offI.setBackgroundResource(R.drawable.back_circle);
-                        onI.setBackgroundResource(R.drawable.backcar);
+                            offI.setBackgroundResource(R.drawable.back_circle);
+                            onI.setBackgroundResource(R.drawable.backcar);
+                            doSomethingRepeatedly();
+
+                        }else {
+
+                            offI.setBackgroundResource(R.drawable.backcar);
+                            onI.setBackgroundResource(R.drawable.back_circle);
+
+                        }
+
 
                     }else {
-
-                        offI.setBackgroundResource(R.drawable.backcar);
-                        onI.setBackgroundResource(R.drawable.back_circle);
-
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        bar.setVisibility(View.GONE);
                     }
 
-
-                }else {
-                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    bar.setVisibility(View.GONE);
                 }
 
-            }
+                @Override
+                public void onFailure(Call<CurrentBillBean> call, Throwable t) {
+                    bar.setVisibility(View.GONE);
 
-            @Override
-            public void onFailure(Call<CurrentBillBean> call, Throwable t) {
-                bar.setVisibility(View.GONE);
+                }
+            });
 
-            }
-        });
+
+        }else {
+            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+
+        }
+
+
 
 
     }

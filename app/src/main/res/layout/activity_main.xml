@@ -39,7 +39,7 @@
                     android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/gig" />
+                    android:src="@drawable/logo_final_620" />
 
             </RelativeLayout>
 

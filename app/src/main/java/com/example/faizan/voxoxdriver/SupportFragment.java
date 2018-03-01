@@ -39,6 +39,7 @@ public class SupportFragment extends Fragment {
     TextView balance, payment, cash, hour;
 
     Toolbar toolbar;
+    ConnectionDetector cd;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +61,7 @@ public class SupportFragment extends Fragment {
         payment = (TextView)view.findViewById(R.id.pay);
         cash = (TextView)view.findViewById(R.id.cash);
         hour = (TextView)view.findViewById(R.id.hour);
+        cd = new ConnectionDetector(getContext());
 
        // bank = (CardView) view.findViewById(R.id.bankCard);
 
@@ -100,49 +102,56 @@ public class SupportFragment extends Fragment {
             }
         });*/
 
+        if (cd.isConnectingToInternet()){
 
-        bar.setVisibility(View.VISIBLE);
-        final Bean b = (Bean) getContext().getApplicationContext();
+            bar.setVisibility(View.VISIBLE);
+            final Bean b = (Bean) getContext().getApplicationContext();
 
-        Retrofit retrofit2 = new Retrofit.Builder()
-                .baseUrl(b.baseURL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        Allapi cr = retrofit2.create(Allapi.class);
+            Retrofit retrofit2 = new Retrofit.Builder()
+                    .baseUrl(b.baseURL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            Allapi cr = retrofit2.create(Allapi.class);
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = mdformat.format(calendar.getTime());
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = mdformat.format(calendar.getTime());
 
-        Log.d("date" , strDate);
+            Log.d("date" , strDate);
 
-       // String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
-        Call<SummaryBean> call = cr.summary(b.driverId,strDate);
-        call.enqueue(new Callback<SummaryBean>() {
-            @Override
-            public void onResponse(Call<SummaryBean> call, Response<SummaryBean> response) {
-                if (Objects.equals(response.body().getStatus(),"1")){
-                    bar.setVisibility(View.GONE);
+            // String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+            Call<SummaryBean> call = cr.summary(b.driverId,strDate);
+            call.enqueue(new Callback<SummaryBean>() {
+                @Override
+                public void onResponse(Call<SummaryBean> call, Response<SummaryBean> response) {
+                    if (Objects.equals(response.body().getStatus(),"1")){
+                        bar.setVisibility(View.GONE);
 
-                    balance.setText(response.body().getData().getCurrentBalance());
-                    payment.setText(response.body().getData().getTodaysPayment());
-                    cash.setText(response.body().getData().getCashCollected());
-                    hour.setText(response.body().getData().getLoginHours());
+                        balance.setText(response.body().getData().getCurrentBalance());
+                        payment.setText(response.body().getData().getTodaysPayment());
+                        cash.setText(response.body().getData().getCashCollected());
+                        hour.setText(response.body().getData().getLoginHours());
 
 
-                }else {
-                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    bar.setVisibility(View.GONE);
+                    }else {
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        bar.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<SummaryBean> call, Throwable t) {
-                bar.setVisibility(View.GONE);
+                @Override
+                public void onFailure(Call<SummaryBean> call, Throwable t) {
+                    bar.setVisibility(View.GONE);
 
-            }
-        });
+                }
+            });
+
+
+        }else {
+            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+
+        }
 
         return view;
     }

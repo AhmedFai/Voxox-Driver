@@ -36,6 +36,7 @@ public class ProfileFragment extends Fragment {
     TextView name, contact, mail;
     SharedPreferences pref;
     SharedPreferences.Editor edit;
+    ConnectionDetector cd;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,53 +55,61 @@ public class ProfileFragment extends Fragment {
         name = (TextView) view.findViewById(R.id.userName);
         contact = (TextView) view.findViewById(R.id.contact);
         mail = (TextView) view.findViewById(R.id.email);
+        cd = new ConnectionDetector(getContext());
 
-        final Bean b = (Bean) getContext().getApplicationContext();
+        if (cd.isConnectingToInternet()){
 
-        Retrofit retrofit2 = new Retrofit.Builder()
-                .baseUrl(b.baseURL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        Allapi cr = retrofit2.create(Allapi.class);
-        String id = pref.getString("driverId", "");
-        Log.d("driverIdProfile", id);
-        Log.d("beandriverId", b.driverId);
-        Call<GetProfileBean> call = cr.profile(id);
-        call.enqueue(new Callback<GetProfileBean>() {
-            @Override
-            public void onResponse(Call<GetProfileBean> call, Response<GetProfileBean> response) {
+            final Bean b = (Bean) getContext().getApplicationContext();
 
-                if (Objects.equals(response.body().getStatus(),"1")){
-                    DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
-                            .cacheOnDisk(true).resetViewBeforeLoading(true).build();
+            Retrofit retrofit2 = new Retrofit.Builder()
+                    .baseUrl(b.baseURL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            Allapi cr = retrofit2.create(Allapi.class);
+            String id = pref.getString("driverId", "");
+            Log.d("driverIdProfile", id);
+            Log.d("beandriverId", b.driverId);
+            Call<GetProfileBean> call = cr.profile(id);
+            call.enqueue(new Callback<GetProfileBean>() {
+                @Override
+                public void onResponse(Call<GetProfileBean> call, Response<GetProfileBean> response) {
 
-                    ImageLoader loader = ImageLoader.getInstance();
+                    if (Objects.equals(response.body().getStatus(),"1")){
+                        DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                                .cacheOnDisk(true).resetViewBeforeLoading(true).build();
 
-                    MainActivity activity = (MainActivity)getContext();
+                        ImageLoader loader = ImageLoader.getInstance();
 
-                    activity.loadImage();
+                        MainActivity activity = (MainActivity)getContext();
 
-                    loader.displayImage(response.body().getData().getImage(), image, options);
-                    name.setText(response.body().getData().getUsername());
-                    contact.setText(response.body().getData().getPhone());
-                    mail.setText(response.body().getData().getEmail());
+                        activity.loadImage();
 
-                    edit.putString("image", response.body().getData().getImage());
-                    edit.apply();
+                        loader.displayImage(response.body().getData().getImage(), image, options);
+                        name.setText(response.body().getData().getUsername());
+                        contact.setText(response.body().getData().getPhone());
+                        mail.setText(response.body().getData().getEmail());
+
+                        edit.putString("image", response.body().getData().getImage());
+                        edit.apply();
+                    }
+                    else {
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else {
-                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                @Override
+                public void onFailure(Call<GetProfileBean> call, Throwable t) {
+
+
+                    Log.d("Failure", t.toString());
                 }
-            }
-
-            @Override
-            public void onFailure(Call<GetProfileBean> call, Throwable t) {
+            });
 
 
-                Log.d("Failure", t.toString());
-            }
-        });
+        }else {
+
+        }
 
 
         return view;
