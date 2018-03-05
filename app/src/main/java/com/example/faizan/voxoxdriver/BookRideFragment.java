@@ -16,6 +16,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 
 
 import com.example.faizan.voxoxdriver.CurrentOperatorBillPOJO.CurrentBillBean;
+import com.example.faizan.voxoxdriver.GetBookingStatus.BookingStatusBean;
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinder;
 import com.example.faizan.voxoxdriver.GoogleMapPOJO.DirectionFinderListener;
 
@@ -55,6 +57,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -82,18 +85,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
-public class BookRideFragment extends Fragment implements View.OnClickListener, DirectionFinderListener {
+public class BookRideFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, DirectionFinderListener {
     SupportMapFragment mSupportMapFragment;
 
     Toolbar toolbar;
     Timer timer;
     SharedPreferences pref;
     SharedPreferences.Editor edit;
-    CardView noti, duty, start;
+    CardView noti, duty, start, billcard;
     ProgressBar bar;
     ImageView offI, onI, homeI;
     LinearLayout offLin, onLin, homeLin, nav, duration;
     String notiId = " ";
+
+    FloatingActionButton mylocationButton;
+    LatLngBounds.Builder builder;
+    LatLngBounds bounds;
 
     String pickUpLat = "";
     String pickUpLng = "";
@@ -156,12 +163,24 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         go = (Button) view.findViewById(R.id.go);
         finishRide = (Button) view.findViewById(R.id.finish);
         cd = new ConnectionDetector(getContext());
+        billcard = (CardView)view.findViewById(R.id.billCard);
 
 
         incentBooking = (TextView)view.findViewById(R.id.inBooking);
         opBill = (TextView)view.findViewById(R.id.opBill);
         totalIncent = (TextView)view.findViewById(R.id.toIncent);
         lastUpdate = (TextView)view.findViewById(R.id.last);
+
+        mylocationButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        mylocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                bounds = builder.build();
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+                map.animateCamera(cu);
+            }
+        });
 
 
         finishRide.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +207,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                             bar.setVisibility(View.GONE);
                             duty.setVisibility(View.VISIBLE);
                             start.setVisibility(View.GONE);
+                            billcard.setVisibility(View.VISIBLE);
+                            mylocationButton.setVisibility(View.GONE);
                             map.clear();
                             doSomethingRepeatedly();
 
@@ -265,6 +286,9 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                 startActivity(mapIntent);
             }
         });
+
+
+
         buttonStrt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -294,6 +318,19 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                             duration.setVisibility(View.GONE);
                             nav.setVisibility(View.VISIBLE);
 
+
+                            map.clear();
+                            if (pickUpLat.length() > 0 && pickUpLng.length() > 0) {
+
+                                Log.d("log ke under", "yahi hai");
+
+                                try {
+                                    new DirectionFinder( BookRideFragment.this , pickUpLat, pickUpLng, dropLat, dropLng).execute();
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
                         } else {
                             Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             bar.setVisibility(View.GONE);
@@ -320,7 +357,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
 
                 timer.cancel();
-                call2.cancel();
+                call.cancel();
 
                 String id = pref.getString("driverId", "");
 
@@ -349,6 +386,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                         noti.setVisibility(View.GONE);
                         duty.setVisibility(View.GONE);
                         start.setVisibility(View.VISIBLE);
+                        mylocationButton.setVisibility(View.VISIBLE);
+                        billcard.setVisibility(View.GONE);
 
 
                         bar.setVisibility(View.GONE);
@@ -555,12 +594,12 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
         Log.d("send request", "hit");
 
-        if (pickUpLat.length() > 0 && pickUpLng.length() > 0) {
+        if (currentLng.length() > 0 && currentLng.length() > 0) {
 
             Log.d("log ke under", "yahi hai");
 
             try {
-                new DirectionFinder(this, pickUpLat, pickUpLng, dropLat, dropLng).execute();
+                new DirectionFinder(this, currentlat, currentLng, pickUpLat, pickUpLng).execute();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -570,6 +609,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
     }
 
 
+    Call<notificationBean> call;
     private void doSomethingRepeatedly() {
         timer = new Timer();
 
@@ -611,7 +651,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                             .build();
                     Allapi cr = retrofit.create(Allapi.class);
 
-                    Call<notificationBean> call = cr.notify(id, lat, lon);
+                    call = cr.notify(id, lat, lon);
                     call.enqueue(new Callback<notificationBean>() {
                         @Override
                         public void onResponse(Call<notificationBean> call, final Response<notificationBean> response) {
@@ -761,6 +801,8 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                     sendRequest();
 
                 }
+
+                builder = new LatLngBounds.Builder();
             }
 
             @Override
@@ -796,6 +838,64 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
             }
         });*/
+       // bar.setVisibility(View.VISIBLE);
+
+
+       /* final Bean b = (Bean) getContext().getApplicationContext();
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseURL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        Allapi cr = retrofit.create(Allapi.class);
+        Call<BookingStatusBean> call = cr.getBooking(b.driverId);
+        call.enqueue(new Callback<BookingStatusBean>() {
+            @Override
+            public void onResponse(Call<BookingStatusBean> call, Response<BookingStatusBean> response) {
+
+              String status = response.body().getData().getStatusCode();
+              switch (status)
+              {
+                  case "1" : {
+                      noti.setVisibility(View.GONE);
+                      duty.setVisibility(View.GONE);
+                      start.setVisibility(View.VISIBLE);
+                      mylocationButton.setVisibility(View.VISIBLE);
+                      billcard.setVisibility(View.GONE);
+
+                      break;
+                  }
+
+                  case "2" : {
+
+                      duration.setVisibility(View.GONE);
+                      nav.setVisibility(View.VISIBLE);
+
+                      break;
+                  }
+
+                  case "3" : {
+
+
+                      bar.setVisibility(View.GONE);
+                      duty.setVisibility(View.VISIBLE);
+                      start.setVisibility(View.GONE);
+                      billcard.setVisibility(View.VISIBLE);
+                      mylocationButton.setVisibility(View.GONE);
+                  }
+              }
+
+            }
+
+            @Override
+            public void onFailure(Call<BookingStatusBean> call, Throwable t) {
+
+            }
+        });*/
+
+
 
         currentOperator();
 
@@ -1007,6 +1107,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
         destinationMarkers = new ArrayList<>();
 
         map.clear();
+        builder = new LatLngBounds.Builder();
 
         for (Route route : routes) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
@@ -1023,6 +1124,7 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
             originMarkers.add(marker1);
             marker1.showInfoWindow();
+            builder.include(marker1.getPosition());
 
             Marker marker2 = map.addMarker(new MarkerOptions()
                     // .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
@@ -1036,11 +1138,21 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
                     color(Color.BLACK).
                     width(10);
 
-            for (int i = 0; i < route.points.size(); i++)
+            for (int i = 0; i < route.points.size(); i++) {
                 polylineOptions.add(route.points.get(i));
+                builder.include(route.points.get(i));
+            }
 
             polylinePaths.add(map.addPolyline(polylineOptions));
         }
+
+        bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+
+
+
+        map.animateCamera(cu);
+
 
     }
 
@@ -1107,6 +1219,14 @@ public class BookRideFragment extends Fragment implements View.OnClickListener, 
 
 
 
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        map.setPadding(20 , 400 , 20 , 560);
 
     }
 }
