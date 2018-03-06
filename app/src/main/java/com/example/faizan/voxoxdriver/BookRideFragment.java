@@ -140,13 +140,13 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
         toolbar = ((MainActivity) getActivity()).findViewById(R.id.toolbar);
         offLin = (LinearLayout) view.findViewById(R.id.offLine);
         onLin = (LinearLayout) view.findViewById(R.id.onLine);
-      //  homeLin = (LinearLayout) view.findViewById(R.id.homeLine);
+        //  homeLin = (LinearLayout) view.findViewById(R.id.homeLine);
         offI = (ImageView) view.findViewById(R.id.offIcon);
         onI = (ImageView) view.findViewById(R.id.onIcon);
         //homeI = (ImageView) view.findViewById(R.id.homeIcon);
         offLin.setOnClickListener(this);
         onLin.setOnClickListener(this);
-       // homeLin.setOnClickListener(this);
+        // homeLin.setOnClickListener(this);
         bar = (ProgressBar) view.findViewById(R.id.progress);
         notiName = (TextView) view.findViewById(R.id.reqName);
         pickupLocation = (TextView) view.findViewById(R.id.pickupLoc);
@@ -163,13 +163,13 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
         go = (Button) view.findViewById(R.id.go);
         finishRide = (Button) view.findViewById(R.id.finish);
         cd = new ConnectionDetector(getContext());
-        billcard = (CardView)view.findViewById(R.id.billCard);
+        billcard = (CardView) view.findViewById(R.id.billCard);
 
 
-        incentBooking = (TextView)view.findViewById(R.id.inBooking);
-        opBill = (TextView)view.findViewById(R.id.opBill);
-        totalIncent = (TextView)view.findViewById(R.id.toIncent);
-        lastUpdate = (TextView)view.findViewById(R.id.last);
+        incentBooking = (TextView) view.findViewById(R.id.inBooking);
+        opBill = (TextView) view.findViewById(R.id.opBill);
+        totalIncent = (TextView) view.findViewById(R.id.toIncent);
+        lastUpdate = (TextView) view.findViewById(R.id.last);
 
         mylocationButton = (FloatingActionButton) view.findViewById(R.id.fab);
         mylocationButton.setOnClickListener(new View.OnClickListener() {
@@ -258,8 +258,6 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                             map.moveCamera(cameraUpdate);
 
 
-
-
                         } else {
                             Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                             bar.setVisibility(View.GONE);
@@ -286,7 +284,6 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                 startActivity(mapIntent);
             }
         });
-
 
 
         buttonStrt.setOnClickListener(new View.OnClickListener() {
@@ -325,7 +322,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                                 Log.d("log ke under", "yahi hai");
 
                                 try {
-                                    new DirectionFinder( BookRideFragment.this , pickUpLat, pickUpLng, dropLat, dropLng).execute();
+                                    new DirectionFinder(BookRideFragment.this, pickUpLat, pickUpLng, dropLat, dropLng).execute();
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
@@ -610,6 +607,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
 
 
     Call<notificationBean> call;
+
     private void doSomethingRepeatedly() {
         timer = new Timer();
 
@@ -838,7 +836,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
 
             }
         });*/
-       // bar.setVisibility(View.VISIBLE);
+        // bar.setVisibility(View.VISIBLE);
 
 
        /* final Bean b = (Bean) getContext().getApplicationContext();
@@ -896,7 +894,6 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
         });*/
 
 
-
         currentOperator();
 
 
@@ -917,7 +914,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                 try {
                     timer.cancel();
                     noti.setVisibility(View.GONE);
-                    call2.cancel();
+                    call.cancel();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -968,7 +965,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
             {
                 offI.setBackgroundResource(R.drawable.back_circle);
                 onI.setBackgroundResource(R.drawable.backcar);
-               // homeI.setBackgroundResource(R.drawable.back_circle);
+                // homeI.setBackgroundResource(R.drawable.back_circle);
 
 
                 String id2 = pref.getString("driverId", "");
@@ -1150,15 +1147,14 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
 
 
-
         map.animateCamera(cu);
 
 
     }
 
-    public void currentOperator(){
+    public void currentOperator() {
 
-        if (cd.isConnectingToInternet()){
+        if (cd.isConnectingToInternet()) {
 
             bar.setVisibility(View.VISIBLE);
             final Bean b = (Bean) getContext().getApplicationContext();
@@ -1175,7 +1171,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                 @Override
                 public void onResponse(Call<CurrentBillBean> call, Response<CurrentBillBean> response) {
 
-                    if (Objects.equals(response.body().getStatus(),"1")){
+                    if (Objects.equals(response.body().getStatus(), "1")) {
 
                         bar.setVisibility(View.GONE);
                         incentBooking.setText(response.body().getData().getIncentiveBooking());
@@ -1183,13 +1179,13 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                         totalIncent.setText(response.body().getData().getTotalIncentive());
                         lastUpdate.setText(response.body().getData().getLastUpdateTime());
 
-                        if (Objects.equals(response.body().getData().getDutyStatusCode(),"1")){
+                        if (Objects.equals(response.body().getData().getDutyStatusCode(), "1")) {
 
                             offI.setBackgroundResource(R.drawable.back_circle);
                             onI.setBackgroundResource(R.drawable.backcar);
                             doSomethingRepeatedly();
 
-                        }else {
+                        } else {
 
                             offI.setBackgroundResource(R.drawable.backcar);
                             onI.setBackgroundResource(R.drawable.back_circle);
@@ -1197,7 +1193,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
                         }
 
 
-                    }else {
+                    } else {
                         Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         bar.setVisibility(View.GONE);
                     }
@@ -1212,12 +1208,10 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
             });
 
 
-        }else {
+        } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
 
         }
-
-
 
 
     }
@@ -1226,7 +1220,7 @@ public class BookRideFragment extends Fragment implements OnMapReadyCallback, Vi
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        map.setPadding(20 , 400 , 20 , 560);
+        map.setPadding(20, 400, 20, 560);
 
     }
 }
