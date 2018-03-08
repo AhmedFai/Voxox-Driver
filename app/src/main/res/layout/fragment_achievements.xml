@@ -1,0 +1,553 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.faizan.voxoxdriver.AchievementsFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Achievements with Voxox"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:weightSum="3">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/rideImage"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerCrop" />
+
+                        <TextView
+                            android:id="@+id/rideNumber"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="6dp"
+                            android:layout_marginTop="90dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:textColor="#000" />
+
+                        <TextView
+                            android:id="@+id/rideText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/rideImage"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:textColor="#000" />
+
+                    </RelativeLayout>
+
+<!--
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/starImage"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/taxi" />
+
+                        <TextView
+                            android:id="@+id/starNumber"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="6dp"
+                            android:layout_marginTop="90dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:text="88"
+                            android:textColor="#000" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/starImage"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:text="5 Star Rides"
+                            android:textColor="#000" />
+
+                    </RelativeLayout>
+-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#e2e2e2">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="View Timeline"
+                        android:textColor="#000" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Compliments From Customers"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:padding="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    android:weightSum="3">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/onpick"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_below="@+id/image"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerCrop"
+                            />
+
+                        <TextView
+                            android:id="@+id/onpickTime"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignBottom="@+id/onpick"
+                            android:layout_alignEnd="@+id/image"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:textColor="#000" />
+
+                        <TextView
+                            android:id="@+id/image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:text="On Time Pick-up"
+                            android:textColor="#000" />
+
+                    </RelativeLayout>
+
+<!--                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_below="@+id/fantastic"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/taxi" />
+
+                        <TextView
+                            android:id="@+id/fantasticCarNumber"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignBottom="@+id/imageView2"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:text="88"
+                            android:textColor="#000" />
+
+
+                        <TextView
+                            android:id="@+id/fantastic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:text="Fantastic Car"
+                            android:textColor="#000" />
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/greatService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:text="Great Service"
+                            android:textColor="#000" />
+
+                        <ImageView
+                            android:id="@+id/greatView"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_below="@+id/greatService"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/taxi" />
+
+                        <TextView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignBottom="@+id/greatView"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:text="88"
+                            android:textColor="#000" />
+
+
+                    </RelativeLayout>-->
+
+                </LinearLayout>
+
+
+<!--
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:weightSum="3">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/compImage"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_below="@+id/routeExpert"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/route" />
+
+                        <TextView
+                            android:id="@+id/ride"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignBottom="@id/compImage"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:text="48"
+                            android:textColor="#000" />
+
+                        <TextView
+                            android:id="@+id/routeExpert"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:text="Route Expert"
+                            android:textColor="#000" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/professionalCar"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_below="@+id/polite"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/ride_circle"
+                            android:padding="20dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/taxi" />
+
+                        <TextView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignBottom="@+id/professionalCar"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginEnd="6dp"
+                            android:layout_marginTop="90dp"
+                            android:background="@drawable/filled_circle"
+                            android:gravity="center"
+                            android:rotation="-30"
+                            android:text="88"
+                            android:textColor="#000" />
+
+
+                        <TextView
+                            android:id="@+id/polite"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:singleLine="true"
+                            android:text="Polite and Professional"
+                            android:textColor="#000" />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+-->
+
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+ <!--       <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Top Reviews"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_ground"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Perfect Service" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_ground"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="One Time Pickup" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_ground"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Good" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_ground"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Nice Driver" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_ground"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Nice Service" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_ground"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Very Good Exp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+-->
+    </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="#ffcd2e"
+            android:visibility="gone"/>
+
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>
